@@ -25,7 +25,7 @@ keyword = 'paris'
 
 function getAndStore(keyword) {
 
-  client.stream('statuses/filter', {track: keyword}, function(stream) {
+  client.stream('statuses/filter', {track: keyword, language: 'en'}, function(stream) {
     stream.on('data', function(tweet) {
       if (tweet.coordinates) {
         //console.log(tweet.coordinates.coordinates);
