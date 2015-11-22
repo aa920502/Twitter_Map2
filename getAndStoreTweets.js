@@ -23,8 +23,6 @@ var client = new Twitter({
 });
 
 
-
-
 function publish(mesg) {
   var publishParams = {
     TopicArn : config.TopicArn,
