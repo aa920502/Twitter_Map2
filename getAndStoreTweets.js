@@ -23,7 +23,7 @@ var client = new Twitter({
 });
 
 
-keyword = 'new york'
+
 
 function publish(mesg) {
   var publishParams = {
@@ -31,16 +31,12 @@ function publish(mesg) {
     Message: mesg
   };
   sns.publish(publishParams, function(err, data) {
-    process.stdout.write("published to Tweets:Topic");
+    process.stdout.write("published to Tweets:Topic\n");
   });
 }
 
-function getAndStore(keyword) {
-
-  client.stream('statuses/filter', {track: keyword, language: 'en'}, function(stream) {
-    stream.on('data', function(tweet) {
-      if (tweet.coordinates) {
-        //console.log(tweet.coordinates.coordinates);
+function storeAndPublishTweet(tweet){
+  if (tweet.coordinates) {
         var params = {
           TableName: table,
           Item: {
@@ -58,43 +54,44 @@ function getAndStore(keyword) {
             } else {
                 console.log("Added tweet from: ", JSON.stringify(tweet.user.name, null, 2));
                 publish(tweet.id_str);
+                
             }
         });
       }
-      else if (tweet.place != null) {
-        if(tweet.place.place_type == 'city'){
-        //console.log(tweet.place.full_name);
-        //console.log(tweet.place.bounding_box.coordinates[0][0]);
-        //console.log(tweet.text);
-        var params = {
-          TableName: table,
-          Item: {
-              "tweet_id": tweet.id_str,
-              "text": tweet.text,
-              "coordinates": tweet.place.bounding_box.coordinates[0][0].toString(),
-              "created_at": tweet.created_at,
-              "user_name": tweet.user.name
-            }
-          };
-          console.log("Adding a new item...");
-          ddDoc.put(params, function(err, data) {
-              if (err) {
-                  console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
-              } else {
-                  console.log("Added tweet from: ", JSON.stringify(tweet.user.name, null, 2));
-                  publish(tweet.id_str);
-              }
-          });
+  else if (tweet.place != null) {
+    if(tweet.place.place_type == 'city'){
+    var params = {
+      TableName: table,
+      Item: {
+          "tweet_id": tweet.id_str,
+          "text": tweet.text,
+          "coordinates": tweet.place.bounding_box.coordinates[0][0].toString(),
+          "created_at": tweet.created_at,
+          "user_name": tweet.user.name
         }
-      }
-      
+      };
+      console.log("Adding a new item...");
+      ddDoc.put(params, function(err, data) {
+          if (err) {
+              console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+          } else {
+              console.log("Added tweet from: ", JSON.stringify(tweet.user.name, null, 2));
+              publish(tweet.id_str);
+          }
+      });
+    }
+  }
+}
+
+function getAndStore() {
+  client.stream('statuses/sample', {language: 'en'}, function(stream) {
+    stream.on('data', function(tweet) {
+      storeAndPublishTweet(tweet);
     });
-   
     stream.on('error', function(error) {
       throw error;
     });
-  });
+  });  
 }
 
-
-getAndStore(keyword);
+getAndStore();
