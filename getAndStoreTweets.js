@@ -1,6 +1,8 @@
 var Twitter = require('twitter');
 var AWS = require('aws-sdk');
 require('dotenv').load();
+var util = require('util');
+var config = require('./config.json');
 
 
 AWS.config.update({
@@ -11,7 +13,7 @@ var ddDoc = new AWS.DynamoDB.DocumentClient();
 
 var table = 'Tweets'
 
-
+var sns = new AWS.SNS();
 
 var client = new Twitter({
 	consumer_key: process.env.consumer_key,
@@ -21,7 +23,17 @@ var client = new Twitter({
 });
 
 
-keyword = 'paris'
+keyword = 'new york'
+
+function publish(mesg) {
+  var publishParams = {
+    TopicArn : config.TopicArn,
+    Message: mesg
+  };
+  sns.publish(publishParams, function(err, data) {
+    process.stdout.write("published to Tweets:Topic");
+  });
+}
 
 function getAndStore(keyword) {
 
@@ -45,6 +57,7 @@ function getAndStore(keyword) {
                 console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
             } else {
                 console.log("Added tweet from: ", JSON.stringify(tweet.user.name, null, 2));
+                publish(tweet.id_str);
             }
         });
       }
@@ -69,6 +82,7 @@ function getAndStore(keyword) {
                   console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
               } else {
                   console.log("Added tweet from: ", JSON.stringify(tweet.user.name, null, 2));
+                  publish(tweet.id_str);
               }
           });
         }
