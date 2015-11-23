@@ -12,12 +12,14 @@ var dd = new AWS.DynamoDB();
 var table = 'Tweets'
 var sqs = new AWS.SQS();
 
-// get message from SQS
+
+
 var receieveMessageParams = {
 	QueueUrl: config.QueueUrl,
 	MaxNumberOfMessages: 10
 };
 
+// get message from SQS
 function getMessages() {
 	sqs.receiveMessage(receieveMessageParams, receiveMessageCallback);
 }
@@ -25,7 +27,7 @@ function getMessages() {
 function receiveMessageCallback(err, data) {
 	if (data && data.Messages && data.Messages.length > 0) {
 		for (var i = 0; i < data.Messages.length; i++) {
-			console.log('received a message');
+			console.log('received a new message');
 			//console.log(JSON.parse(data.Messages[i].Body).Message);
 			var params = {
 				TableName: table,
@@ -45,7 +47,7 @@ function receiveMessageCallback(err, data) {
 			});
 
 
-
+			// Delete the message after reading it
 			var deleteMessageParams = {
 				QueueUrl: config.QueueUrl,
 				ReceiptHandle: data.Messages[i].ReceiptHandle

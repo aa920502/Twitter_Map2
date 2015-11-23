@@ -10,6 +10,7 @@ AWS.config.update({
 var sns = new AWS.SNS();
 var sqs = new AWS.SQS();
 
+// variable for config.json
 var config = {};
 
 // create a topic
@@ -46,7 +47,7 @@ function createQueue(cb) {
   });
 }
 
-  // use queue url to get ARN for the queue
+// use queue url to get queue ARN
 function getQueueAttr(cb) {
   sqs.getQueueAttributes({
     QueueUrl: config.QueueUrl,
@@ -117,6 +118,7 @@ function setQueueAttr(cb) {
   });
 }
 
+// generate config.json
 function writeConfigFile(cb) {
   fs.writeFile('config.json', JSON.stringify(config, null, 4), function(err) {
     if(err) {
@@ -127,4 +129,5 @@ function writeConfigFile(cb) {
   }); 
 }
 
+// execute in order
 async.series([createTopic, createQueue, getQueueAttr, snsSubscribe, setQueueAttr, writeConfigFile]);

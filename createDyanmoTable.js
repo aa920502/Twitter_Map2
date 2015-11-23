@@ -1,3 +1,5 @@
+/* Initialize and create a new Dynamo DB in AWS */
+
 var AWS = require("aws-sdk");
 
 AWS.config.update({

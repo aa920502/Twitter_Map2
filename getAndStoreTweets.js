@@ -34,28 +34,30 @@ function publish(mesg) {
 }
 
 function storeAndPublishTweet(tweet){
+  // If tweet's coordinates attribute is not null
   if (tweet.coordinates) {
-        var params = {
-          TableName: table,
-          Item: {
-              "tweet_id": tweet.id_str,
-              "text": tweet.text,
-              "coordinates": tweet.coordinates.coordinates.toString(),
-              "created_at": tweet.created_at,
-              "user_name": tweet.user.name
-          }
-        };
-        console.log("Adding a new item...");
-        ddDoc.put(params, function(err, data) {
-            if (err) {
-                console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
-            } else {
-                console.log("Added tweet from: ", JSON.stringify(tweet.user.name, null, 2));
-                publish(tweet.id_str);
-                
-            }
-        });
+    var params = {
+      TableName: table,
+      Item: {
+          "tweet_id": tweet.id_str,
+          "text": tweet.text,
+          "coordinates": tweet.coordinates.coordinates.toString(),
+          "created_at": tweet.created_at,
+          "user_name": tweet.user.name
       }
+    };
+    console.log("Adding a new item...");
+    ddDoc.put(params, function(err, data) {
+        if (err) {
+            console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+        } else {
+            console.log("Added tweet from: ", JSON.stringify(tweet.user.name, null, 2));
+            publish(tweet.id_str);    
+        }
+    });
+  }
+
+  // If tweet's place attribute is not null
   else if (tweet.place != null) {
     if(tweet.place.place_type == 'city'){
     var params = {
@@ -79,9 +81,11 @@ function storeAndPublishTweet(tweet){
       });
     }
   }
+
 }
 
-function getAndStore() {
+// Stream tweets, store them to Dynamo DB, and use SNS to publish to topic
+function getAndStore(){
   client.stream('statuses/sample', {language: 'en'}, function(stream) {
     stream.on('data', function(tweet) {
       storeAndPublishTweet(tweet);
