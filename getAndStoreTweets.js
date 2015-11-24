@@ -11,7 +11,7 @@ AWS.config.update({
 
 var ddDoc = new AWS.DynamoDB.DocumentClient();
 
-var table = 'Tweets'
+var table = 'Tweets2'
 
 var sns = new AWS.SNS();
 
@@ -43,7 +43,7 @@ function storeAndPublishTweet(tweet){
           "text": tweet.text,
           "coordinates": tweet.coordinates.coordinates.toString(),
           "created_at": tweet.created_at,
-          "user_name": tweet.user.name
+          "user_name": tweet.user.name,
       }
     };
     console.log("Adding a new item...");
@@ -67,7 +67,7 @@ function storeAndPublishTweet(tweet){
           "text": tweet.text,
           "coordinates": tweet.place.bounding_box.coordinates[0][0].toString(),
           "created_at": tweet.created_at,
-          "user_name": tweet.user.name
+          "user_name": tweet.user.name,
         }
       };
       console.log("Adding a new item...");
