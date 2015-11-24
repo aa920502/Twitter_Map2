@@ -11,7 +11,7 @@ AWS.config.update({
 
 var ddDoc = new AWS.DynamoDB.DocumentClient();
 
-var table = 'Tweets2'
+var table = 'Tweets'
 
 var sns = new AWS.SNS();
 

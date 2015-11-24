@@ -10,7 +10,7 @@ AWS.config.update({
 var dynamodbDoc = new AWS.DynamoDB.DocumentClient()
 var dd = new AWS.DynamoDB();
 
-var table = 'Tweets2'
+var table = 'Tweets'
 var sqs = new AWS.SQS();
 
 
@@ -29,11 +29,11 @@ function getMessages() {
 function receiveMessageCallback(err, data) {
 	if (data && data.Messages && data.Messages.length > 0) {
 		for (var i = 0; i < data.Messages.length; i++) {
-			console.log('received a new message');
+			
 
 			var sentiment = 'default' // variable to hold sentiment value
 			var tweet_id = JSON.parse(data.Messages[i].Body).Message;
-
+			//console.log('got message #',i, 'with tweet_id:'+tweet_id);
 			// get Tweet text from DynamoDB using the tweet_id field			
 			var params = {
 				TableName: table,
@@ -47,45 +47,23 @@ function receiveMessageCallback(err, data) {
 				else {
 					// use alchemy to decide sentiment type of tweet text
 					alchemyapi.sentiment('text',data.Item.text.S, {}, function(response) {
-						sentiment = response['docSentiment']['type']
-						console.log(data.Item.text.S,'Sentiment: ' + sentiment);	
+						if (response.status == 'ERROR') {
+							console.log("caught error ",response);
+						}
+						else {
+						console.log("calling updateTweet with text", data.Item.text.S , " and ", response);
+						updateTweet(response, tweet_id);
+						}	
 					});
 				}
 			});
-
-			// update in dynamo db
-			var update_params = {
-			    TableName:table,
-			    Key:{
-			        "HashKeyElement": {
-			        	'tweet_id': {S:JSON.parse(data.Messages[i].Body).Message}
-			        }
-			    },
-			    UpdateExpression: "SET #attrName =:attrValue",
-			    ExpressionAttributeNames : {
-					"#attrName" : "sentiment"
-				},
-			    ExpressionAttributeValues:{
-			        ":attrValue" : {S: sentiment}
-			    },
-			};
-			console.log("Updating the item...");
-			dynamodbDoc.update(update_params, function(err, data) {
-			    if (err) {
-			        console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
-			    } else {
-			        console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
-			    }
-			});
-
-
 
 			// Delete the message after reading it
 			var deleteMessageParams = {
 				QueueUrl: config.QueueUrl,
 				ReceiptHandle: data.Messages[i].ReceiptHandle
 			};
-			//sqs.deleteMessage(deleteMessageParams, deleteMessageCallback)
+			sqs.deleteMessage(deleteMessageParams, deleteMessageCallback)
 		}
 		getMessages();
 	}
@@ -97,6 +75,37 @@ function receiveMessageCallback(err, data) {
 
 function deleteMessageCallback(err, data) {
 	console.log('deleted a message');
+}
+
+
+function updateTweet(response, tweet_id) {
+	// update in dynamo db
+	var sentiment = response['docSentiment']['type'];
+	var score = '0';
+	if (sentiment !== 'neutral'){
+		score = response['docSentiment']['score'];
+	}
+	//console.log(sentiment);
+	var update_params = {
+	    TableName:table,
+	    Key: {
+	    	'tweet_id': {S:tweet_id}
+	    },
+	    UpdateExpression: "SET sentiment = :attrValue",
+	    ExpressionAttributeValues : {
+			":attrValue" : {S: score}
+		},
+		ReturnValues: "UPDATED_NEW"
+	};
+	//console.log(tweet_id);
+	//console.log("Updating the item...");
+	dd.updateItem(update_params, function(err, data) {
+	    if (err) {
+	        console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+	    } else {
+	        //console.log("Updated TweetID:", tweet_id, JSON.stringify(data, null, 2));
+	    }
+	});
 }
 
 // function describeTable(){
