@@ -1,5 +1,7 @@
 {
     "TopicArn": "arn:aws:sns:us-east-1:275512981344:tweets",
     "QueueUrl": "https://sqs.us-east-1.amazonaws.com/275512981344/TweetsQ",
-    "QueueArn": "arn:aws:sqs:us-east-1:275512981344:TweetsQ"
+    "QueueArn": "arn:aws:sqs:us-east-1:275512981344:TweetsQ",
+    "TopicArn2": "arn:aws:sns:us-east-1:275512981344:tweets_processed"
 }
+
