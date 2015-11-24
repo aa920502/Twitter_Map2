@@ -10,7 +10,7 @@ AWS.config.update({
 var dynamodbDoc = new AWS.DynamoDB.DocumentClient()
 var dd = new AWS.DynamoDB();
 
-var table = 'Tweets'
+var table = 'Tweets2'
 var sqs = new AWS.SQS();
 
 
@@ -32,17 +32,16 @@ function receiveMessageCallback(err, data) {
 			console.log('received a new message');
 
 			var sentiment = 'default' // variable to hold sentiment value
+			var tweet_id = JSON.parse(data.Messages[i].Body).Message;
 
-			//console.log(JSON.parse(data.Messages[i].Body).Message);
+			// get Tweet text from DynamoDB using the tweet_id field			
 			var params = {
 				TableName: table,
 				Key: {
-					'tweet_id': {S:JSON.parse(data.Messages[i].Body).Message}
+					'tweet_id': {S:tweet_id}
 				},
 				AttributesToGet: ['text']
 			};
-
-			// get Tweet text from DynamoDB using the tweet_id field
 			dd.getItem(params, function(err, data) {
 				if (err) console.log(err);
 				else {
@@ -58,14 +57,16 @@ function receiveMessageCallback(err, data) {
 			var update_params = {
 			    TableName:table,
 			    Key:{
-			        'tweet_id': {S:JSON.parse(data.Messages[i].Body).Message}
+			        "HashKeyElement": {
+			        	'tweet_id': {S:JSON.parse(data.Messages[i].Body).Message}
+			        }
 			    },
 			    UpdateExpression: "SET #attrName =:attrValue",
 			    ExpressionAttributeNames : {
 					"#attrName" : "sentiment"
 				},
 			    ExpressionAttributeValues:{
-			        ":attrValue" : {"S": sentiment}
+			        ":attrValue" : {S: sentiment}
 			    },
 			};
 			console.log("Updating the item...");
