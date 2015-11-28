@@ -1,3 +1,5 @@
+//retrieve tweets from SQS, process it with alchemy, and set sentiment value with corresponding tweet
+
 var AlchemyAPI = require('./alchemyapi_node/alchemyapi');
 var AWS = require('aws-sdk');
 var alchemyapi = new AlchemyAPI();
@@ -13,6 +15,7 @@ var dd = new AWS.DynamoDB();
 
 var table = 'Tweets'
 var sqs = new AWS.SQS();
+
 
 var app = Consumer.create({
 	queueUrl: config.QueueUrl,
@@ -34,7 +37,8 @@ var app = Consumer.create({
 						console.error('caught ERROR ', response);
 					}
 					else {
-						console.log('calling updateTweet with text', data.Item.text.S, ' and ', response);
+						//console.log('calling updateTweet with text', data.Item.text.S, ' and ', response);
+						console.log('processed successfully');
 						updateTweet(response, tweet_id);
 					}
 				});

@@ -1,3 +1,5 @@
+// Scan through dynamo db and retrieve tweets which contains 'keyword' in text
+
 var AWS = require("aws-sdk");
 
 AWS.config.update({
@@ -8,30 +10,35 @@ var dynamodbDoc = new AWS.DynamoDB.DocumentClient();
 
 console.log("Querying in the table");
 
+
 var params = {
     TableName : "Tweets",
-    KeyConditionExpression: "#tweet_id = :tweet_id",
+    ProjectionExpression: "#tweet_id, #t",
+    FilterExpression: "#tweet_id > :tweet_id",  // retrieve tweets which has tweet_id greater than 0 (all tweets)
     ExpressionAttributeNames:{
-        "#tweet_id": "tweet_id"
+        "#tweet_id": "tweet_id",
+        "#t": "text"
     },
     ExpressionAttributeValues: {
-        ":tweet_id": '669291267507908608'
+        ":tweet_id": "000000000000000000"
     }
 };
 
-dynamodbDoc.query(params, function(err, data) {
+
+dynamodbDoc.scan(params, function(err, data) {
     if (err) {
         console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
     } else {
         console.log("Query succeeded.");
         data.Items.forEach(function(item) {
-            console.log("Tweet_ID: ", item.tweet_id + " - text: " + item.text);
-            var term = 'New York';
+            var term = 'Tomorrow';
+
             if(item.text.indexOf(term) > -1 ){
                 console.log("keyword found");
+                console.log("Tweet_ID: ", item.tweet_id + " - text: " + item.text);
             }
             else{
-                console.log("keyword not found")
+                // console.log("keyword not found")
             }
         });
     }
