@@ -47,7 +47,8 @@ body {
 }
 .site-wrapper-inner {
   display: table-cell;
-  vertical-align: top;
+
+  /*vertical-align: top;*/
 }
 .cover-container {
   margin-right: auto;
@@ -166,6 +167,6 @@ body {
 
 #map {
   width: 1000px;
-  height: 800px;
+  height: 700px;
   margin: auto;
 }

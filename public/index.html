@@ -44,9 +44,21 @@
               <h3 class="masthead-brand">Twitter_Map2</h3>
               <nav>
                 <ul class="nav masthead-nav">
-                  <li class="active"><a href="#">Home</a></li>
-                  <li><a href="#">Keywords</a></li>
-                  <li><a href="#">Contact</a></li>
+                  <li> 
+                    <form>
+                      <div class="answer1wrap">
+                        <select id="mySelect">
+                          <option value="void">Choose your answer</option>
+                          <option value="New York">New York</option>
+                          <option value="Paris">Paris</option>
+                          <option value="Cool">Cool</option>
+                        </select>
+                      </div>
+                    </form>
+                  </li>
+                  <li>
+                    <button class="btn btn-default" id="checkbtn" onclick="answers();" type="button"><span    class="glyphicon glyphicon-check"></span> Get Map</button>
+                  </li>
                 </ul>
               </nav>
             </div>
@@ -82,5 +94,14 @@
     <!-- <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script> -->
     <script src="http://maps.googleapis.com/maps/api/js?sensor=false&extension=.js&output=embed"></script>
     <script src="js/map.js"></script>
+    <script> 
+      function answers(){
+        var answer=document.getElementById("mySelect");
+        if(answer[answer.selectedIndex].value != "void"){
+          alert("You just chose: " + answer[answer.selectedIndex].value); 
+        }
+      }
+    </script>
+
   </body>
 </html>
