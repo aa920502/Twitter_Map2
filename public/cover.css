@@ -67,14 +67,18 @@ body {
 .masthead-brand {
   margin-top: 10px;
   margin-bottom: 10px;
+  margin-left: 70px;
   font-size: 40px;
 }
 
 .masthead-nav > li {
   display: inline-block;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 60px;
 }
 .masthead-nav > li + li {
-  margin-left: 20px;
+  margin-left: 10px;
 }
 .masthead-nav > li > a {
   padding-right: 0;
@@ -142,6 +146,7 @@ body {
     top: 0;
   }
   .mastfoot {
+    color: #FB8F3D;
     position: fixed;
     bottom: 0;
   }
@@ -169,4 +174,9 @@ body {
   width: 1000px;
   height: 700px;
   margin: auto;
+}
+
+#answer1wrap {
+  width: 100px;
+  height: 30px;
 }

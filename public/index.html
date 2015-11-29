@@ -41,26 +41,36 @@
 
           <div class="masthead clearfix">
             <div class="inner">
-              <h3 class="masthead-brand">Twitter_Map2</h3>
-              <nav>
-                <ul class="nav masthead-nav">
-                  <li> 
-                    <form>
-                      <div class="answer1wrap">
-                        <select id="mySelect">
-                          <option value="void">Choose your answer</option>
-                          <option value="New York">New York</option>
-                          <option value="Paris">Paris</option>
-                          <option value="Cool">Cool</option>
-                        </select>
-                      </div>
-                    </form>
-                  </li>
-                  <li>
-                    <button class="btn btn-default" id="checkbtn" onclick="answers();" type="button"><span    class="glyphicon glyphicon-check"></span> Get Map</button>
-                  </li>
-                </ul>
-              </nav>
+              
+              <div class="navbar navbar-inverse navbar-fixed-top">
+                <div class="navbar-inner">
+                  <h1 class="masthead-brand">Twitter_Map2</h1>
+                  <ul class="nav masthead-nav">
+                   
+                    <li> 
+                      <form>
+                        <div class="answer1wrap">
+                          <select id="mySelect">
+                            <option value="void">Choose a Twitter Topic</option>
+                            <option value="Cities">Cities</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Holidays">Holidays</option>
+                            <option value="Politics">Politics</option>
+                            <option value="Twitter Trending">Twitter Trending</option>
+                          </select>
+                        </div>
+                      </form>
+                    </li>
+
+                    <li>
+                      <button style= "background-color: black " class="btn btn-lg btn-default" id="checkbtn" onclick="answers();" type="button">
+                        <font color="#FB8F3D"><b> Get Map </b></font>
+                      </button>
+                    </li>
+                  
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
 
