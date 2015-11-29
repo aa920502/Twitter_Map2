@@ -8,7 +8,7 @@ AWS.config.update({
 
 var dynamodbDoc = new AWS.DynamoDB.DocumentClient();
 
-console.log("Querying in the table");
+
 
 
 var params = {
@@ -24,22 +24,27 @@ var params = {
     }
 };
 
+var query = exports;
 
-dynamodbDoc.scan(params, function(err, data) {
-    if (err) {
-        console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
-    } else {
-        console.log("Query succeeded.");
-        data.Items.forEach(function(item) {
-            var term = 'Tomorrow';
+query.queryDynamoDB = function(term) {
+    console.log('*********************************');
+    console.log("Querying in the table for ", term);
+    console.log('*********************************');
+    dynamodbDoc.scan(params, function(err, data) {
+        if (err) {
+            console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
+        } else {
+            console.log("Query succeeded.");
+            data.Items.forEach(function(item) {
 
-            if(item.text.indexOf(term) > -1 ){
-                console.log("keyword found");
-                console.log("Tweet_ID: ", item.tweet_id + " - text: " + item.text);
-            }
-            else{
-                // console.log("keyword not found")
-            }
-        });
-    }
-});
+                if(item.text.toLowerCase().indexOf(term) > -1 ){
+                    console.log("keyword found");
+                    console.log("Tweet_ID: ", item.tweet_id + " - text: " + item.text);
+                }
+                else{
+                    // console.log("keyword not found")
+                }
+            });
+        }
+    });
+}

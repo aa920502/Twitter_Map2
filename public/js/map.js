@@ -13,12 +13,13 @@ $(document).ready(function(){
   function initialize() {
 
     /* position Amsterdam */
-    var latlng = new google.maps.LatLng(52.3731, 4.8922);
+    var latlng = new google.maps.LatLng(18.45, -66.1);
 
     var mapOptions = {
       center: latlng,
       scrollWheel: false,
-      zoom: 13
+      zoom: 3,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     
     var marker = new google.maps.Marker({
