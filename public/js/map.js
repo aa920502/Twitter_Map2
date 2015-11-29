@@ -1,4 +1,12 @@
 $(document).ready(function(){
+  
+  var socket = io.connect();
+      socket.on('news', function(data) {
+        console.log(data);
+        //alert(data.hello);
+        //socket.emit('other', {my: 'datas'});
+      });
+
   /* google maps -----------------------------------------------------*/
   google.maps.event.addDomListener(window, 'load', initialize);
 

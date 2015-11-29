@@ -92,13 +92,16 @@
     <script src="js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <!-- <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script> -->
-    <script src="http://maps.googleapis.com/maps/api/js?sensor=false&extension=.js&output=embed"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?extension=.js&output=embed"></script>
     <script src="js/map.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
     <script> 
       function answers(){
+        var socket = io.connect();
         var answer=document.getElementById("mySelect");
         if(answer[answer.selectedIndex].value != "void"){
-          alert("You just chose: " + answer[answer.selectedIndex].value); 
+          alert("You just chose: " + answer[answer.selectedIndex].value);
+          socket.emit('other', {ans: answer[answer.selectedIndex].value});
         }
       }
     </script>
