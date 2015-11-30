@@ -4,8 +4,10 @@ var server = require('http').Server(app);
 //var router = app.Router();
 var path = __dirname + '/public/';
 var io = require('socket.io')(server)
+var getTweets = require('./getAndStoreTweets.js');
 
-var query = require('./queryDynamoDB.js');
+
+// var query = require('./queryDynamoDB.js');
 
 
 app.use(express.static('public'));
@@ -19,6 +21,8 @@ DEBUG='socket.io node app.js'
 server.listen(8080);
 console.log("listening on Port: 8080");
 
+
+
 app.get('/', function(req, res) {
     res.sendFile(path + 'index.html');
 });
@@ -28,6 +32,7 @@ io.on('connection', function(socket) {
     socket.on('selection', function (data) {
         console.log(data.ans);
         Search(data.ans, socket);
+        getTweets.getAndStore(keywords[data.ans]);
         //socket.emit('map', )        
     });
 });

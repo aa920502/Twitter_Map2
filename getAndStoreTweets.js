@@ -84,16 +84,31 @@ function storeAndPublishTweet(tweet){
 
 }
 
+var getTweets = exports;
 // Stream tweets, store them to Dynamo DB, and use SNS to publish to topic
-function getAndStore(){
-  client.stream('statuses/sample', {language: 'en'}, function(stream) {
+getTweets.getAndStore = function(categories){
+  words = '';
+  for (var i = 0; i < categories.length; i++) {
+    if (i == categories.length - 1) {
+      words += categories[i];
+    }
+    else {
+      words += categories[i] + ',';
+    }
+  }
+  console.log(words);
+  client.stream('statuses/filter', {track: words, language: 'en'}, function(stream) {
     stream.on('data', function(tweet) {
+      //console.log(tweet.text);
       storeAndPublishTweet(tweet);
     });
     stream.on('error', function(error) {
       throw error;
     });
-  });  
+  });
+  
 }
 
-getAndStore();
+//var keywords = ['new york', 'paris', 'london', 'tokyo'];
+
+//getAndStore(keywords);
