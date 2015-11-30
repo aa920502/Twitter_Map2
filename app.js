@@ -90,12 +90,10 @@ function Search(keyword){
                             // console.log("keyword found");
                             // console.log("Tweet_ID: ", item.tweet_id + " - text: " + item.text + " - sentiment " + item.sentiment + " - coordinates" + item.coordinates);
                             if(!item.sentiment){
-                                console.log('0');
                                 arr['sentiment'].push("0");
                                 arr['coordinates'].push(item.coordinates);
                             }
                             else{
-                                console.log('1');
                                 arr['sentiment'].push(item.sentiment);
                                 arr['coordinates'].push(item.coordinates);
                             }
@@ -107,7 +105,7 @@ function Search(keyword){
                     
                 });
             }
-            console.log(arr);
+            console.log(arr['coordinates']);
         });
         
     }
