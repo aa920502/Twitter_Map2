@@ -25,9 +25,10 @@ app.get('/', function(req, res) {
 
 io.on('connection', function(socket) {
     socket.emit('news', {hello: 'world' });
-    socket.on('other', function (data) {
+    socket.on('selection', function (data) {
         console.log(data.ans);
-        Search(data.ans);        
+        Search(data.ans, socket);
+        //socket.emit('map', )        
     });
 });
 
@@ -49,7 +50,7 @@ keywords['Cities'] = new Array('new york', 'paris', 'los angeles', 'london', 'to
 keywords['Sports'] = new Array('soccer', 'football', 'basketball', 'baseball', 'tennis', 'golf', 'giants', 'patriots', 'barcelona', 'real madrid');
 keywords['Holidays'] = new Array('thanksgiving', 'christmas', 'new year', 'xmas');
 keywords['Politics'] = new Array('obama', 'clinton', 'trump', 'republican', 'democrat', 'rubio', 'bush', 'sanders', 'bernie', 'carson', 'cruz');
-keywords['Twitter Trending'] = 'top trends twitter api results';
+keywords['Twitter Trending'] = '';
 
 var params = {
     TableName : "Tweets",
@@ -68,7 +69,7 @@ var params = {
 
 var term = "";
 
-function Search(keyword){
+function Search(keyword, socket){
     var arr = new Array();
     arr['sentiment'] = new Array();
     arr['coordinates'] = new Array();
@@ -105,7 +106,8 @@ function Search(keyword){
                     
                 });
             }
-            console.log(arr['coordinates']);
+            //console.log(arr['coordinates']);
+            socket.emit('map', arr['coordinates']);
         });
         
     }
