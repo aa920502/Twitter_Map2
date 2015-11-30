@@ -110,8 +110,9 @@ function Search(keyword, socket){
                 });
             }
             //console.log(arr['coordinates']);
-            console.log("current sentiment is: " + sentiment);
+            arr['coordinates'].push(sentiment); // add sentiment to last
             socket.emit('map', arr['coordinates']);
+            //socket.emit('senti', sentiment);
         });
         
     }

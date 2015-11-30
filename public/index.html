@@ -111,7 +111,7 @@
         var socket = io.connect();
         var answer=document.getElementById("mySelect");
         if(answer[answer.selectedIndex].value != "void"){
-          alert("You just chose: " + answer[answer.selectedIndex].value);
+          console.log("You just chose: " + answer[answer.selectedIndex].value);
           socket.emit('selection', {ans: answer[answer.selectedIndex].value});
         }
       }
