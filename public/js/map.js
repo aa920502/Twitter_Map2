@@ -27,7 +27,7 @@ function initialize() {
     heatmap = new google.maps.visualization.HeatmapLayer({
       data: points,
       map: map,
-      radius: 50
+      radius: 30
     });
     heatmap.setMap(map);
 
@@ -66,13 +66,36 @@ $(document).ready(function(){
       }
       
       console.log("points count: " + points.length);
-      console.log("total sentiment: " + data[data.length-1]);
-      console.log("current average sentiment is "+ (0.5 + (data[data.length-1]/(2*points.length))));
+      totSentiment = data[data.length-1];
+      console.log("total sentiment: " + totSentiment);
+      avgSentiment = 0.5 + (data[data.length-1]/(2*points.length));
+      console.log("current average sentiment is "+ avgSentiment);
       var rate  = 0.5 + (data[data.length-1]/(2*points.length)); // rate must be 0-1
-      var gradient = [
-            'rgba('+Math.round(255*rate)+', '+Math.round(255*(1-rate))+', 0, 0)',
-            'rgba('+Math.round(255*rate)+', '+Math.round(255*(1-rate))+', 0, 1)'];
+      // var gradient = [
+      //       'rgba('+Math.round(255*rate)+', '+Math.round(255*(1-rate))+', 0, 0)',
+      //       'rgba('+Math.round(255*rate)+', '+Math.round(255*(1-rate))+', 0, 1)'];
       
+      if (totSentiment > 0 ){
+        gradient = null;
+      }
+      else {
+        var gradient = [
+          'rgba(0, 255, 255, 0)',
+          'rgba(0, 255, 255, 1)',
+          'rgba(0, 191, 255, 1)',
+          'rgba(0, 127, 255, 1)',
+          'rgba(0, 63, 255, 1)',
+          'rgba(0, 0, 255, 1)',
+          'rgba(0, 0, 223, 1)',
+          'rgba(0, 0, 191, 1)',
+          'rgba(0, 0, 159, 1)',
+          'rgba(0, 0, 127, 1)',
+          'rgba(63, 0, 91, 1)',
+          'rgba(127, 0, 63, 1)',
+          'rgba(191, 0, 31, 1)',
+          'rgba(255, 0, 0, 1)' ]
+        }
+
       heatmap.set('gradient', gradient);
       heatmap.setMap(map);
       

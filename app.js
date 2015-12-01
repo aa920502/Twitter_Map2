@@ -77,9 +77,9 @@ function Search(keyword, socket){
     
 
     if (keyword !== 'void' ){
-        console.log('*********************************');
+        console.log('*******************************************');
         console.log("Querying in the table for category: " + keyword);
-        console.log('*********************************');
+        console.log('*******************************************');
         dynamodbDoc.scan(params, function(err, data) {
             if (err) {
                 console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
