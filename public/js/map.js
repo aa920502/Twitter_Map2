@@ -5,7 +5,6 @@ var points = new Array();
 
 function initialize() {
 
-    /* position Amsterdam */
     var latlng = new google.maps.LatLng(18.45, -66.1);
 
     var mapOptions = {
@@ -20,9 +19,17 @@ function initialize() {
     //   url: '/',
     //   animation: google.maps.Animation.DROP
     // });
+
     
+
     map = new google.maps.Map(document.getElementById('map'), mapOptions);
     //marker.setMap(map);
+
+    // Create the legend and display on the map
+    var legendDiv = document.createElement('DIV');
+    var legend = new Legend(legendDiv, map);
+    legendDiv.index = 1;
+    map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendDiv);
 
     heatmap = new google.maps.visualization.HeatmapLayer({
       data: points,
@@ -32,6 +39,38 @@ function initialize() {
     heatmap.setMap(map);
 
   };
+
+
+function Legend(controlDiv, map) {
+  // Set CSS styles for the DIV containing the control
+  // Setting padding to 5 px will offset the control
+  // from the edge of the map
+  controlDiv.style.padding = '5px';
+
+  // Set CSS for the control border
+  var controlUI = document.createElement('DIV');
+  controlUI.style.backgroundColor = 'white';
+  controlUI.style.borderStyle = 'solid';
+  controlUI.style.borderWidth = '1px';
+  controlUI.title = 'Legend';
+  controlDiv.appendChild(controlUI);
+
+  // Set CSS for the control text
+  var controlText = document.createElement('DIV');
+  controlText.style.fontFamily = 'Arial,sans-serif';
+  controlText.style.fontSize = '12px';
+  controlText.style.paddingLeft = '4px';
+  controlText.style.paddingRight = '4px';
+  controlText.style.color = 'black';
+
+  
+  // Add the text
+  controlText.innerHTML = '<b>Legend</b><br />' +
+    '<img src="http://maps.google.com/mapfiles/ms/micons/green-dot.png" /> Positive<br />' +
+    '<img src="http://maps.google.com/mapfiles/ms/micons/blue-dot.png" /> Negative<br />';
+  
+  controlUI.appendChild(controlText);
+}
 
 
 $(document).ready(function(){
