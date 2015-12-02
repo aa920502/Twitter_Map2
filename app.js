@@ -12,6 +12,7 @@ app.use(express.static('../../node_modules/bootstrap/'));
 DEBUG='socket.io node app.js'
 
 
+
 server.listen(8080);
 console.log("listening on Port: 8080");
 
@@ -24,7 +25,7 @@ io.on('connection', function(socket) {
     socket.on('selection', function (data) {
         console.log(data.ans);
         Search(data.ans, socket); //Search for chosen category
-        //getTweets.getAndStore(keywords[data.ans]);
+        getTweets.getAndStore(keywords[data.ans]);
     });
 });
 

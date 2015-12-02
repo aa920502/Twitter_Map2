@@ -34,7 +34,7 @@ function initialize() {
     heatmap = new google.maps.visualization.HeatmapLayer({
       data: points,
       map: map,
-      radius: 30
+      radius: 35
     });
     heatmap.setMap(map);
 

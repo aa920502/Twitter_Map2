@@ -109,6 +109,6 @@ getTweets.getAndStore = function(categories){
   
 }
 
-//var keywords = ['new york', 'paris', 'london', 'tokyo'];
 
-//getAndStore(keywords);
+
+//getTweets.getAndStore(keywords);

@@ -33,7 +33,7 @@ body {
 body {
   color: #FB8F3D;
   text-align: center;
-  text-shadow: 0 2px 3px rgba(0,0,0,1);
+  /*text-shadow: 0 2px 3px rgba(0,0,0,1);*/
 }
 
 /* Extra markup and styles for table-esque vertical and horizontal centering */
