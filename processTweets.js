@@ -15,7 +15,7 @@ var dd = new AWS.DynamoDB();
 
 var table = 'Tweets'
 var sqs = new AWS.SQS();
-
+var sns = new AWS.SNS();
 
 var app = Consumer.create({
 	queueUrl: config.QueueUrl,
@@ -39,7 +39,9 @@ var app = Consumer.create({
 					else {
 						//console.log('calling updateTweet with text', data.Item.text.S, ' and ', response);
 						console.log('processed successfully');
+						// save to DB
 						updateTweet(response, tweet_id);
+
 					}
 				});
 			}
@@ -49,7 +51,7 @@ var app = Consumer.create({
 	}
 });
 
-
+// process tweet info
 function updateTweet(response, tweet_id) {
 	var sentiment = response['docSentiment']['type'];
 	var score = '0';
@@ -66,16 +68,31 @@ function updateTweet(response, tweet_id) {
 		ExpressionAttributeValues: {
 			':attrValue': {S: score}
 		},
-		ReturnValues: 'UPDATED_NEW'
+		ReturnValues: 'ALL_NEW'
 	};
 
 	dd.updateItem(updateParams, function(err, data) {
 		if (err) {
 			console.error('Unable to update item. Error JSON:', JSON.stringify(err, null, 2));
 		}
+		else {
+			// publish sns about processed tweet
+			//console.log(data.Attributes.coordinates.S +','+ data.Attributes.sentiment.S);
+			publish(data.Attributes.coordinates.S +','+ data.Attributes.sentiment.S);
+		}
 	});
 }
 
+// publish new sns stating new tweet has been processed
+function publish(mesg) {
+  var publishParams = {
+    TopicArn : config.TopicArnUpdate,
+    Message: mesg
+  };
+  sns.publish(publishParams, function(err, data) {
+    process.stdout.write("published to TweetsProcessed:Topic\n");
+  });
+}
 
 app.on('error', function(err) {
 	console.log(err);

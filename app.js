@@ -4,12 +4,15 @@ var server = require('http').Server(app);
 var path = __dirname + '/public/';
 var io = require('socket.io')(server)
 var getTweets = require('./getAndStoreTweets.js');
+var config = require('./config.json');
+var Consumer = require('sqs-consumer');
+
 
 app.use(express.static('public'));
 app.use(express.static('socket.io'));
 app.use(express.static('../../node_modules/bootstrap/'));
 
-DEBUG='socket.io node app.js'
+//DEBUG='socket.io node app.js'
 
 
 
@@ -28,6 +31,12 @@ io.on('connection', function(socket) {
         getTweets.getAndStore(keywords[data.ans]);
     });
 });
+
+// *********************************************************************************
+// Create a consumer that will send new Tweet location + sentiment data to web user
+// after they select their topic
+// *********************************************************************************
+
 
 
 
