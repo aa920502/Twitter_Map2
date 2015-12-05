@@ -39,9 +39,8 @@ var app = Consumer.create({
 					else {
 						//console.log('calling updateTweet with text', data.Item.text.S, ' and ', response);
 						console.log('processed successfully');
-						// save to DB
+						// save to DB and publish sns
 						updateTweet(response, tweet_id);
-
 					}
 				});
 			}

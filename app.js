@@ -32,12 +32,43 @@ io.on('connection', function(socket) {
     });
 });
 
-// *********************************************************************************
-// Create a consumer that will send new Tweet location + sentiment data to web user
-// after they select their topic
-// *********************************************************************************
+// ***********************************************************************************
+// Create a consumer that will grab new Tweet location + sentiment data from processor
+// and send it to web client after they select their topic
+// ***********************************************************************************
 
 
+ var arrNEW = new Array();
+    arrNEW['sentiment'] = new Array();
+    arrNEW['coordinates'] = new Array();
+var newPoints = 0;
+function resetArray() {
+    arrNEW.length = 0;
+    arrNEW['sentiment'].length = 0;
+    arrNEW['coordinates'].length = 0;
+    newPoints = 0;
+}
+
+var sqs = new AWS.SQS();
+
+var freshTweets = Consumer.create({
+    queueUrl: config.QueueUrlUpdate,
+    batchSize: 10,
+    handleMessage: function (message, done) {
+        var tweetData = JSON.parse(message.Body).Message.split(',');
+        var lng = parseFloat(tweetData[0]);
+        var lat = parseFloat(tweetData[1]);
+        var sentiment = parseFloat((tweetData[2]));
+        arrNEW['coordinates'].push(lng,lat);
+        arrNEW['sentiment'].push(sentiment);
+        newPoints++;
+        if (newPoints >= 5){
+            socket.emit('mapUpdate')
+        }    
+        // delete message from sqs
+        return done();
+    }
+});
 
 
 // ****************************************************************************
