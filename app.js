@@ -23,14 +23,22 @@ app.get('/', function(req, res) {
     res.sendFile(path + 'index.html');
 });
 
+var newArray = new Array();
+var newPoints = 0;
+var newSentiment = 0;
+
 io.on('connection', function(socket) {
     socket.emit('news', {hello: 'world' });
     socket.on('selection', function (data) {
         console.log(data.ans);
         Search(data.ans, socket); //Search for chosen category
         getTweets.getAndStore(keywords[data.ans]);
+        refreshMap(socket);
     });
+
 });
+
+
 
 // ***********************************************************************************
 // Create a consumer that will grab new Tweet location + sentiment data from processor
@@ -38,37 +46,43 @@ io.on('connection', function(socket) {
 // ***********************************************************************************
 
 
- var arrNEW = new Array();
-    arrNEW['sentiment'] = new Array();
-    arrNEW['coordinates'] = new Array();
-var newPoints = 0;
-function resetArray() {
-    arrNEW.length = 0;
-    arrNEW['sentiment'].length = 0;
-    arrNEW['coordinates'].length = 0;
-    newPoints = 0;
+function refreshMap(socket) {
+    var freshTweets = Consumer.create({
+        queueUrl: config.QueueUrlUpdate,
+        batchSize: 10,
+        handleMessage: function (message, done) {
+            var tweetData = JSON.parse(message.Body).Message.split(',');
+            //var lng = parseFloat(tweetData[0]);
+            //var lat = parseFloat(tweetData[1]);
+            var sentiment = parseFloat((tweetData[2]));
+            newArray.push(tweetData[0] +',' + tweetData[1]);
+            newSentiment += sentiment;
+            newPoints++;
+            if (newPoints >= 5){
+                newArray.push(newSentiment);
+                socket.emit('mapUpdate', newArray);
+                newSentiment = 0;
+                newPoints = 0;
+                newArray.length = 0;
+            }    
+            // delete message from sqs
+            return done();
+        }
+    });
+
+    freshTweets.on('error', function(err) {
+        console.log(err);
+    })
+
+    freshTweets.start();
 }
+
+
+
 
 //var sqs = new AWS.SQS();
 
-// var freshTweets = Consumer.create({
-//     queueUrl: config.QueueUrlUpdate,
-//     batchSize: 10,
-//     handleMessage: function (message, done) {
-//         var tweetData = JSON.parse(message.Body).Message.split(',');
-//         var lng = parseFloat(tweetData[0]);
-//         var lat = parseFloat(tweetData[1]);
-//         var sentiment = parseFloat((tweetData[2]));
-//         arrNEW['coordinates'].push(lng,lat);
-//         arrNEW['sentiment'].push(sentiment);
-//         newPoints++;
-//         if (newPoints >= 5){
-//             //socket.emit('mapUpdate')
-//         }    
-//         // delete message from sqs
-//         return done();
-//     }
-// });
+
 
 
 // ****************************************************************************
@@ -109,8 +123,8 @@ var params = {
 
 function Search(keyword, socket){
     var arr = new Array();
-    arr['sentiment'] = new Array();
-    arr['coordinates'] = new Array();
+    // arr['sentiment'] = new Array();
+    //arr['coordinates'] = new Array();
     // term to search for
     var term = "";
     // sentiment variable
@@ -134,13 +148,13 @@ function Search(keyword, socket){
                             // console.log("keyword found");
                             // console.log("Tweet_ID: ", item.tweet_id + " - text: " + item.text + " - sentiment " + item.sentiment + " - coordinates" + item.coordinates);
                             if(!item.sentiment){
-                                arr['sentiment'].push("0");
-                                arr['coordinates'].push(item.coordinates);
+                                // arr['sentiment'].push("0");
+                                arr.push(item.coordinates);
                             }
                             else{
                             	sentiment += parseFloat(item.sentiment);
-                                arr['sentiment'].push(item.sentiment);
-                                arr['coordinates'].push(item.coordinates);
+                                // arr['sentiment'].push(item.sentiment);
+                                arr.push(item.coordinates);
                             }
                         }
                         else{
@@ -151,8 +165,8 @@ function Search(keyword, socket){
                 });
             }
             //console.log(arr['coordinates']);
-            arr['coordinates'].push(sentiment); // add sentiment to last
-            socket.emit('map', arr['coordinates']);
+            arr.push(sentiment); // add total sentiment as last element in the array
+            socket.emit('map', arr);
             //socket.emit('senti', sentiment);
         });
         
