@@ -1,4 +1,4 @@
-Twitter-Map
+Twitter-Map2
 =============
 
     Plots tweets in real-time on Google maps - using Node.js, socket.io 
