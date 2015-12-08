@@ -49,26 +49,26 @@ function resetArray() {
     newPoints = 0;
 }
 
-var sqs = new AWS.SQS();
+//var sqs = new AWS.SQS();
 
-var freshTweets = Consumer.create({
-    queueUrl: config.QueueUrlUpdate,
-    batchSize: 10,
-    handleMessage: function (message, done) {
-        var tweetData = JSON.parse(message.Body).Message.split(',');
-        var lng = parseFloat(tweetData[0]);
-        var lat = parseFloat(tweetData[1]);
-        var sentiment = parseFloat((tweetData[2]));
-        arrNEW['coordinates'].push(lng,lat);
-        arrNEW['sentiment'].push(sentiment);
-        newPoints++;
-        if (newPoints >= 5){
-            socket.emit('mapUpdate')
-        }    
-        // delete message from sqs
-        return done();
-    }
-});
+// var freshTweets = Consumer.create({
+//     queueUrl: config.QueueUrlUpdate,
+//     batchSize: 10,
+//     handleMessage: function (message, done) {
+//         var tweetData = JSON.parse(message.Body).Message.split(',');
+//         var lng = parseFloat(tweetData[0]);
+//         var lat = parseFloat(tweetData[1]);
+//         var sentiment = parseFloat((tweetData[2]));
+//         arrNEW['coordinates'].push(lng,lat);
+//         arrNEW['sentiment'].push(sentiment);
+//         newPoints++;
+//         if (newPoints >= 5){
+//             //socket.emit('mapUpdate')
+//         }    
+//         // delete message from sqs
+//         return done();
+//     }
+// });
 
 
 // ****************************************************************************

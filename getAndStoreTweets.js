@@ -1,13 +1,14 @@
-var Twitter = require('twitter');
+// var Twitter = require('twitter');
 var AWS = require('aws-sdk');
-require('dotenv').load();
 var util = require('util');
 var config = require('./config.json');
-
+var Twit = require('twit');
+require('dotenv').load();
 
 AWS.config.update({
   region: "us-east-1",
 });
+
 
 var ddDoc = new AWS.DynamoDB.DocumentClient();
 
@@ -15,13 +16,25 @@ var table = 'Tweets'
 
 var sns = new AWS.SNS();
 
-var client = new Twitter({
-	consumer_key: process.env.consumer_key,
-	consumer_secret: process.env.consumer_secret,
-	access_token_key: process.env.access_token_key,
-	access_token_secret: process.env.access_token_secret,
+var firstStream = 0;
+
+
+
+// var client = new Twitter({
+// 	consumer_key: process.env.consumer_key,
+// 	consumer_secret: process.env.consumer_secret,
+// 	access_token_key: process.env.access_token_key,
+// 	access_token_secret: process.env.access_token_secret,
+// });
+
+var client = new Twit({
+  consumer_key: process.env.consumer_key,
+  consumer_secret: process.env.consumer_secret,
+  access_token: process.env.access_token_key,
+  access_token_secret: process.env.access_token_secret,
 });
 
+var stream = client.stream('statuses/filter', {track: 'zzaxw', language: 'en'});
 
 function publish(mesg) {
   var publishParams = {
@@ -96,17 +109,29 @@ getTweets.getAndStore = function(categories){
       words += categories[i] + ',';
     }
   }
+  
   console.log(words);
-  client.stream('statuses/filter', {track: words, language: 'en'}, function(stream) {
-    stream.on('data', function(tweet) {
+
+  if (firstStream != 0) {
+    stream.stop();
+    stream.start();
+  }
+  firstStream += 1;
+
+  stream = client.stream('statuses/filter', {track: words, language: 'en'});
+      stream.on('tweet', function(tweet) {
       //console.log(tweet.text);
+
       storeAndPublishTweet(tweet);
     });
     stream.on('error', function(error) {
       throw error;
     });
-  });
   
+}
+
+getTweets.stopStream = function() {
+  client.stream.stop();
 }
 
 
