@@ -51,7 +51,7 @@ function Legend(controlDiv, map) {
   var controlUI = document.createElement('DIV');
   controlUI.style.backgroundColor = 'white';
   controlUI.style.borderStyle = 'solid';
-  controlUI.style.borderWidth = '1px';
+  controlUI.style.borderWidth = '2px';
   controlUI.title = 'Legend';
   controlDiv.appendChild(controlUI);
 
@@ -66,8 +66,8 @@ function Legend(controlDiv, map) {
   
   // Add the text
   controlText.innerHTML = '<b>Legend</b><br />' +
-    '<img src="http://maps.google.com/mapfiles/ms/micons/green-dot.png" /> Positive<br />' +
-    '<img src="http://maps.google.com/mapfiles/ms/micons/blue-dot.png" /> Negative<br />';
+    '<img src="images/green.png" /> Positive<br />' +
+    '<img src="images/blue.png" /> Negative<br />';
   
   controlUI.appendChild(controlText);
 }
