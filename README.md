@@ -1,7 +1,7 @@
 Twitter-Map2
 =============
 
-    Plots tweets in real-time on Google maps - using Node.js, socket.io 
+    Plots tweets in real-time on Google maps - using Node.js, socket.io, alchemyapi, AWS DynamoDB, AWS SQS, AWS SNS 
 
     Tweet-plotter subscribes to a particular keyword and shows tweets in real-time. 
     
