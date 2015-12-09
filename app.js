@@ -39,7 +39,7 @@ io.on('connection', function(socket) {
         } else {
             // selection is twitter trending woeid
             // make query for woeid and send it back to client
-            socket.emit('news', {woeid: selection});
+            socket.emit('trend', {woeid: selection});
         }
     });
 

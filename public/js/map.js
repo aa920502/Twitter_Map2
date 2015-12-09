@@ -91,6 +91,23 @@ $(document).ready(function(){
     //socket.emit('other', {my: 'datas'});
   });
 
+  socket.on('trend', function(data) {
+    //console.log(data);
+    var infowindow = new google.maps.InfoWindow({
+      content: '<b>Currently Trending in North America:</b><ol><li>#SamRules!!</li><li>#JunchaoDrools!</li><li>#SaveTheWhales</li> </ol>',
+      maxWidth: 250
+    });
+    var loc = new google.maps.LatLng(18.45, -66.1);
+    var marker = new google.maps.Marker({
+      position: loc,
+      map: map,
+      title: 'Trending in America',
+      animation: google.maps.Animation.DROP
+    });
+    google.maps.event.addListener(marker, 'click', function() {
+      infowindow.open(map,marker);
+    });
+  });
 
   socket.on('map', function(data) {
     console.log('got map data');
