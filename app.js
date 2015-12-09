@@ -31,9 +31,16 @@ io.on('connection', function(socket) {
     socket.emit('news', {hello: 'world' });
     socket.on('selection', function (data) {
         console.log(data.ans);
-        Search(data.ans, socket); //Search for chosen category
-        getTweets.getAndStore(keywords[data.ans]);
-        refreshMap(socket);
+        var selection = Number(data.ans);
+        if (isNaN(selection)) {
+            Search(data.ans, socket); //Search for chosen category
+            getTweets.getAndStore(keywords[data.ans]);
+            refreshMap(socket);
+        } else {
+            // selection is twitter trending woeid
+            // make query for woeid and send it back to client
+            socket.emit('news', {woeid: selection});
+        }
     });
 
 });
