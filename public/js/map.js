@@ -93,11 +93,22 @@ $(document).ready(function(){
 
   socket.on('trend', function(data) {
     //console.log(data);
+
+    var content = '<b>Currently Trending: ' + data[0] + ':</b>' + '<ol><li>#SamRules!!</li><li>#JunchaoDrools!</li><li>#SaveTheWhales</li> </ol>'
+    var loc = new google.maps.LatLng(parseFloat(data[1]), parseFloat(data[2]));
+    
     var infowindow = new google.maps.InfoWindow({
-      content: '<b>Currently Trending in North America:</b><ol><li>#SamRules!!</li><li>#JunchaoDrools!</li><li>#SaveTheWhales</li> </ol>',
-      maxWidth: 250
+      content: content
     });
-    var loc = new google.maps.LatLng(18.45, -66.1);
+    function toggleBounce() {
+      if (marker.getAnimation() !== null) {
+        marker.setAnimation(null);
+      } else {
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+      }
+    }
+    
+    
     var marker = new google.maps.Marker({
       position: loc,
       map: map,
@@ -106,6 +117,7 @@ $(document).ready(function(){
     });
     google.maps.event.addListener(marker, 'click', function() {
       infowindow.open(map,marker);
+      //toggleBounce();
     });
   });
 

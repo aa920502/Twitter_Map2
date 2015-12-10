@@ -39,11 +39,21 @@ io.on('connection', function(socket) {
         } else {
             // selection is twitter trending woeid
             // make query for woeid and send it back to client
-            socket.emit('trend', {woeid: selection});
+            socket.emit('trend',woeidArray[data.ans]);
         }
     });
 
 });
+
+// location woeid arrays
+var woeidArray = new Array();
+woeidArray['1'] = new Array('World Wide', '26.656946', '-40.175854');
+woeidArray['24865672'] = new Array('North America','37.500716', '-96.425851');
+woeidArray['24865673'] = new Array('South America','-14.190197','-59.863353');
+woeidArray['24865675'] = new Array('Europe','49.546357', '14.667896');
+woeidArray['24865671'] = new Array('Asia','49.317719', '87.089772');
+woeidArray['24865670'] = new Array('Africa','8.135000', '22.050709');
+woeidArray['23424748'] = new Array('Australia','-23.654927', '133.847582')
 
 
 
