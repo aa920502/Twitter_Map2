@@ -46,8 +46,9 @@ io.on('connection', function(socket) {
         } else {
             // selection is twitter trending woeid
             // make query for woeid and send it back to client
-            socket.emit('trend',woeidArray[data.ans]);
-            getTrends(data.ans);
+            
+            getTrends(socket, data.ans);
+            //console.log(htmlString);
             //console.log(ans);
         }
     });
@@ -65,7 +66,10 @@ woeidArray['24865670'] = new Array('Africa','8.135000', '22.050709');
 woeidArray['23424748'] = new Array('Australia','-23.654927', '133.847582')
 
 
-function getTrends(woeid) {
+function getTrends(socket, woeid) {
+  var content = '<div id="content">' +
+  '<h1 id="firstHeading" class="firstHeading">Currently Trending: '+woeidArray[woeid][0]+'</h1>'+
+  '<div id = "bodyContent"> <ol>'
   var res = '';
   client.get('trends/place', {id: woeid}, function(err, data) {
     if (typeof data == "undefined") {
@@ -74,10 +78,11 @@ function getTrends(woeid) {
       res = data;
     }
     for(var i = 0; i<5; i++){
-        console.log(res[0].trends[i].name);
+        content += '<li>' + res[0].trends[i].name +'</li>'
     }
-    // return res[0].trends[0].name;
-  });
+    content += '</ol> </div> </div>';
+    socket.emit('trend',{w:woeidArray[woeid], s:content});
+    });
 }
 
 

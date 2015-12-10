@@ -95,8 +95,9 @@ $(document).ready(function(){
   socket.on('trend', function(data) {
     //console.log(data);
    
-    var content = '<b>Currently Trending: ' + data[0] + ':</b>' + '<ol><li>#SamRules!!</li><li>#JunchaoDrools!</li><li>#SaveTheWhales</li> </ol>'
-    var loc = new google.maps.LatLng(parseFloat(data[1]), parseFloat(data[2]));
+    //var content = '<b>Currently Trending: ' + data[0] + ':</b>' + '<ol><li>#SamRules!!</li><li>#JunchaoDrools!</li><li>#SaveTheWhales</li> </ol>'
+    var content = data.s;
+    var loc = new google.maps.LatLng(parseFloat(data.w[1]), parseFloat(data.w[2]));
     
     var infowindow = new google.maps.InfoWindow({
       content: content
