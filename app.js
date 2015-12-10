@@ -58,12 +58,12 @@ io.on('connection', function(socket) {
 // location woeid arrays
 var woeidArray = new Array();
 woeidArray['1'] = new Array('World Wide', '26.656946', '-40.175854');
-woeidArray['24865672'] = new Array('North America','37.500716', '-96.425851');
-woeidArray['24865673'] = new Array('South America','-14.190197','-59.863353');
-woeidArray['24865675'] = new Array('Europe','49.546357', '14.667896');
-woeidArray['24865671'] = new Array('Asia','49.317719', '87.089772');
-woeidArray['24865670'] = new Array('Africa','8.135000', '22.050709');
-woeidArray['23424748'] = new Array('Australia','-23.654927', '133.847582')
+woeidArray['2459115'] = new Array('New York','40.7146', '-74.0071');
+woeidArray['2344862'] = new Array('Rio de Janeiro','-22.0672','-42.9212');
+woeidArray['615702'] = new Array('Paris','48.85693', '2.3412');
+woeidArray['1118370'] = new Array('Tokyo','35.670479', '139.740921');
+woeidArray['1582504'] = new Array('Johannesburg','-26.204941', '28.04003');
+woeidArray['1105779'] = new Array('Sydney','-33.856281', '151.020966');
 
 
 function getTrends(socket, woeid) {
