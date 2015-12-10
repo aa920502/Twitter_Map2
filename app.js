@@ -6,7 +6,14 @@ var io = require('socket.io')(server)
 var getTweets = require('./getAndStoreTweets.js');
 var config = require('./config.json');
 var Consumer = require('sqs-consumer');
+var Twit = require('twit');
 
+var client = new Twit({
+  consumer_key: process.env.consumer_key,
+  consumer_secret: process.env.consumer_secret,
+  access_token: process.env.access_token_key,
+  access_token_secret: process.env.access_token_secret,
+});
 
 app.use(express.static('public'));
 app.use(express.static('socket.io'));
@@ -40,7 +47,7 @@ io.on('connection', function(socket) {
             // selection is twitter trending woeid
             // make query for woeid and send it back to client
             socket.emit('trend',woeidArray[data.ans]);
-            //var ans = getTweets.getTrends(data.ans);
+            getTrends(data.ans);
             //console.log(ans);
         }
     });
@@ -57,6 +64,21 @@ woeidArray['24865671'] = new Array('Asia','49.317719', '87.089772');
 woeidArray['24865670'] = new Array('Africa','8.135000', '22.050709');
 woeidArray['23424748'] = new Array('Australia','-23.654927', '133.847582')
 
+
+function getTrends(woeid) {
+  var res = '';
+  client.get('trends/place', {id: woeid}, function(err, data) {
+    if (typeof data == "undefined") {
+      res = 'false';
+    } else {
+      res = data;
+    }
+    for(var i = 0; i<5; i++){
+        console.log(res[0].trends[i].name);
+    }
+    // return res[0].trends[0].name;
+  });
+}
 
 
 // ***********************************************************************************
