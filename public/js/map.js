@@ -1,6 +1,7 @@
 var map, heatmap;
 var points = new Array();
 var totSentiment = 0;
+
 //points.push(new google.maps.LatLng(18.45, -66.1));
 
 function initialize() {
@@ -93,7 +94,7 @@ $(document).ready(function(){
 
   socket.on('trend', function(data) {
     //console.log(data);
-
+   
     var content = '<b>Currently Trending: ' + data[0] + ':</b>' + '<ol><li>#SamRules!!</li><li>#JunchaoDrools!</li><li>#SaveTheWhales</li> </ol>'
     var loc = new google.maps.LatLng(parseFloat(data[1]), parseFloat(data[2]));
     
@@ -119,6 +120,7 @@ $(document).ready(function(){
       infowindow.open(map,marker);
       //toggleBounce();
     });
+
   });
 
   socket.on('map', function(data) {
