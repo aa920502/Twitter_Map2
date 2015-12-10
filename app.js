@@ -40,6 +40,8 @@ io.on('connection', function(socket) {
             // selection is twitter trending woeid
             // make query for woeid and send it back to client
             socket.emit('trend',woeidArray[data.ans]);
+            //var ans = getTweets.getTrends(data.ans);
+            //console.log(ans);
         }
     });
 

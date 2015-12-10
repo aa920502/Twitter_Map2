@@ -134,6 +134,17 @@ getTweets.stopStream = function() {
   client.stream.stop();
 }
 
+getTweets.getTrends = function(woeid) {
+  var res = '';
+  client.get('trends/place', {id: woeid}, function(err, data) {
+    if (typeof data == "undefined") {
+      res = 'false';
+    } else {
+      res = data;
+    }
+    return res;
+  });
+};
 
 
 //getTweets.getAndStore(keywords);
