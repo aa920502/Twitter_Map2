@@ -8,7 +8,7 @@ var config = require('./config.json');
 var Consumer = require('sqs-consumer');
 var Twit = require('twit');
 
-var client = new Twit({
+var client2 = new Twit({
   consumer_key: process.env.consumer_key,
   consumer_secret: process.env.consumer_secret,
   access_token: process.env.access_token_key,
@@ -52,6 +52,10 @@ io.on('connection', function(socket) {
             //console.log(ans);
         }
     });
+    socket.on('disconnect', function() {
+        //getTweets.stopStream();
+        socket.emit('client disconnected');
+    });
 
 });
 
@@ -71,7 +75,7 @@ function getTrends(socket, woeid) {
   '<h1 id="firstHeading" class="firstHeading">Currently Trending: '+woeidArray[woeid][0]+'</h1>'+
   '<div id = "bodyContent"> <ol>'
   var res = '';
-  client.get('trends/place', {id: woeid}, function(err, data) {
+  client2.get('trends/place', {id: woeid}, function(err, data) {
     if (typeof data == "undefined") {
       res = 'false';
     } else {
